@@ -159,3 +159,75 @@ tbody tr:hover {
 .form-row button:hover {
     background-color: #374151;
 }
+
+/* =========================
+   자산 검색 / 필터 영역
+   ========================= */
+
+/* 검색창과 상태 필터를 한 줄로 배치한다. */
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+
+/* 자산 검색 입력창 */
+.search-box input {
+    flex: 1;
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+
+    font-size: 14px;
+}
+
+
+/* 검색창을 클릭했을 때 테두리를 강조한다. */
+.search-box input:focus {
+    outline: none;
+    border-color: #6b7280;
+}
+
+
+/* 상태 필터 선택창 */
+.search-box select {
+    width: 150px;
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+
+    background-color: white;
+
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   자산 관리 버튼
+   ========================= */
+
+/* 테이블 내부의 모든 버튼 기본 스타일 */
+.asset-list table button {
+    padding: 7px 12px;
+    margin-right: 5px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+
+    background-color: white;
+
+    font-size: 13px;
+    cursor: pointer;
+}
+
+
+/* 버튼에 마우스를 올렸을 때 */
+.asset-list table button:hover {
+    background-color: #f3f4f6;
+}
