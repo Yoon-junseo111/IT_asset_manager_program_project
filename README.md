@@ -85,6 +85,7 @@ it_asset_manager/
 │   └── day1_3.png
 │
 └── README.md
+```
 
 ---
 
