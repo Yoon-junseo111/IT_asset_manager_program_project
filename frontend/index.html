@@ -19,112 +19,181 @@
 
     <main>
 
+        <!-- ========================================
+             대시보드
+             ======================================== -->
+
         <section class="dashboard">
 
+            <!-- 자산 등록 영역 -->
             <section class="asset-form">
 
-    <h2>자산 등록</h2>
+                <h2>자산 등록</h2>
 
-    <div class="form-row">
+                <div class="form-row">
 
-        <input
-            type="text"
-            id="assetId"
-            placeholder="자산번호 (예: LAPTOP-002)"
-        >
+                    <input
+                        type="text"
+                        id="assetId"
+                        placeholder="자산번호 (예: LAPTOP-002)"
+                    >
 
-        <input
-            type="text"
-            id="assetName"
-            placeholder="자산명"
-        >
+                    <input
+                        type="text"
+                        id="assetName"
+                        placeholder="자산명"
+                    >
 
-        <select id="assetType">
-            <option value="노트북">노트북</option>
-            <option value="모니터">모니터</option>
-            <option value="키보드">키보드</option>
-            <option value="마우스">마우스</option>
-        </select>
+                    <select id="assetType">
 
-        <select id="assetStatus">
-            <option value="대여 가능">대여 가능</option>
-            <option value="사용 중">사용 중</option>
-            <option value="수리 중">수리 중</option>
-        </select>
+                        <option value="노트북">
+                            노트북
+                        </option>
 
-        <input
-            type="text"
-            id="assetUser"
-            placeholder="사용자"
-        >
+                        <option value="모니터">
+                            모니터
+                        </option>
 
-        <button id="addAssetButton">
-            등록
-        </button>
+                        <option value="키보드">
+                            키보드
+                        </option>
 
-    </div>
+                        <option value="마우스">
+                            마우스
+                        </option>
 
-</section>
+                    </select>
+
+                    <select id="assetStatus">
+
+                        <option value="대여 가능">
+                            대여 가능
+                        </option>
+
+                        <option value="사용 중">
+                            사용 중
+                        </option>
+
+                        <option value="수리 중">
+                            수리 중
+                        </option>
+
+                    </select>
+
+                    <input
+                        type="text"
+                        id="assetUser"
+                        placeholder="사용자"
+                    >
+
+                    <button id="addAssetButton">
+                        등록
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- 전체 자산 -->
             <div class="asset-card">
+
                 <h3>전체 자산</h3>
-                <p id="totalCount">0</p>
+
+                <p id="totalCount">
+                    0
+                </p>
+
             </div>
 
+
+            <!-- 사용 중 -->
             <div class="asset-card">
+
                 <h3>사용 중</h3>
-                <p id="usingCount">0</p>
+
+                <p id="usingCount">
+                    0
+                </p>
+
             </div>
 
+
+            <!-- 대여 가능 -->
             <div class="asset-card">
+
                 <h3>대여 가능</h3>
-                <p id="availableCount">0</p>
+
+                <p id="availableCount">
+                    0
+                </p>
+
             </div>
 
+
+            <!-- 수리 중 -->
             <div class="asset-card">
+
                 <h3>수리 중</h3>
-                <p id="repairCount">0</p>
+
+                <p id="repairCount">
+                    0
+                </p>
+
             </div>
 
         </section>
+
+
+        <!-- ========================================
+             자산 목록
+             ======================================== -->
 
         <section class="asset-list">
 
             <h2>자산 목록</h2>
 
 
-            <!-- 자산 검색 및 상태 필터 영역 -->
+            <!-- 검색 및 상태 필터 -->
             <div class="search-box">
 
-                <!--
-                    자산번호, 자산명, 종류, 사용자를 검색하기 위한 입력창
-                -->
                 <input
                     type="text"
                     id="searchInput"
                     placeholder="자산번호, 자산명, 종류, 사용자 검색"
                 >
 
-                <!--
-                    자산의 상태에 따라 목록을 필터링하기 위한 선택창
-                -->
+
                 <select id="statusFilter">
 
-                    <!-- 전체를 선택하면 모든 상태의 자산을 표시한다. -->
-                    <option value="전체">전체 상태</option>
+                    <option value="전체">
+                        전체 상태
+                    </option>
 
-                    <!-- 각 자산 상태별 필터 -->
-                    <option value="대여 가능">대여 가능</option>
-                    <option value="사용 중">사용 중</option>
-                    <option value="수리 중">수리 중</option>
+                    <option value="대여 가능">
+                        대여 가능
+                    </option>
+
+                    <option value="사용 중">
+                        사용 중
+                    </option>
+
+                    <option value="수리 중">
+                        수리 중
+                    </option>
 
                 </select>
 
             </div>
 
+
+            <!-- 자산 목록 테이블 -->
             <table>
 
                 <thead>
+
                     <tr>
+
                         <th>자산번호</th>
                         <th>자산명</th>
                         <th>종류</th>
@@ -133,8 +202,11 @@
                         <th>대여일</th>
                         <th>반납 예정일</th>
                         <th>관리</th>
+
                     </tr>
+
                 </thead>
+
 
                 <tbody id="assetTableBody">
 
@@ -144,9 +216,49 @@
 
         </section>
 
+
+        <!-- ========================================
+             대여 이력
+             ======================================== -->
+
+        <section class="rental-history">
+
+            <h2>대여 이력</h2>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>자산번호</th>
+                        <th>자산명</th>
+                        <th>대여자</th>
+                        <th>대여일</th>
+                        <th>반납 예정일</th>
+                        <th>실제 반납일</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- JavaScript에서 대여 이력을 출력한다. -->
+                <tbody id="rentalHistoryTableBody">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
     </main>
 
+
+    <!-- JavaScript -->
     <script src="app.js"></script>
 
 </body>
+
 </html>
