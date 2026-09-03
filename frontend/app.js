@@ -40,6 +40,41 @@ function saveAssets() {
     );
 }
 
+// 자산의 반납 상태를 확인하는 함수
+function getRentalStatus(asset) {
+
+    // 현재 대여 중이 아니거나 반납 예정일이 없으면 일반 상태
+    if (asset.status !== "사용 중" || !asset.returnDate) {
+        return "normal";
+    }
+
+    // 오늘 날짜 가져오기
+    const today = new Date();
+
+    // 자산의 반납 예정일 가져오기
+    const dueDate = new Date(asset.returnDate);
+
+    // 오늘과 반납 예정일의 시간 차이 계산
+    const diffTime = dueDate - today;
+
+    // 시간 차이를 일(day) 단위로 변환
+    const diffDays = Math.ceil(
+        diffTime / (1000 * 60 * 60 * 24)
+    );
+
+    // 반납 예정일이 이미 지났다면 반납 지연
+    if (diffDays < 0) {
+        return "overdue";
+    }
+
+    // 반납 예정일까지 3일 이하라면 반납 예정
+    if (diffDays <= 3) {
+        return "dueSoon";
+    }
+
+    // 그 외에는 일반 상태
+    return "normal";
+}
 
 // ========================================
 // 대여 이력 LocalStorage 저장
@@ -138,6 +173,14 @@ const statusFilter =
 const rentalHistoryTableBody =
     document.getElementById("rentalHistoryTableBody");
 
+// 반납 예정 
+const dueSoonCount = 
+    document.getElementById("dueSoonCount");
+
+// 반납 지연 대시보드 요소
+const overdueCount = 
+    document.getElementById("overdueCount");
+
 // ========================================
 // 자산 목록 출력
 // ========================================
@@ -202,7 +245,22 @@ function renderAssets(keyword = "", status = "전체") {
 
             <td>${asset.type}</td>
 
-            <td>${asset.status}</td>
+            <td>
+                ${asset.status}
+
+                ${
+                    // 반납 예정 상태라면 표시
+                    getRentalStatus(asset) === "dueSoon"
+                        ? "/ 반납 예정"
+
+                    // 반납 지연 상태라면 표시
+                    : getRentalStatus(asset) === "overdue"
+                        ? " / ⚠ 반납 지연"
+
+                    // 일반 상태라면 아무것도 표시하지 않음
+                    : ""
+                }
+            </td>
 
             <td>${asset.user || "-"}</td>
 
@@ -548,6 +606,20 @@ function updateDashboard() {
         ).length;
 
 
+    // 반납 예정 자산 개수를 계산한다.
+    const dueSoon =
+        assets.filter(
+            asset => getRentalStatus(asset) === "dueSoon"
+        ).length;
+
+
+    // 반납 지연 자산 개수를 계산한다.
+    const overdue =
+        assets.filter(
+            asset => getRentalStatus(asset) === "overdue"
+        ).length;
+
+
     // 전체 자산 숫자를 화면에 표시한다.
     document.getElementById("totalCount").textContent =
         total;
@@ -566,8 +638,17 @@ function updateDashboard() {
     // 수리 중인 자산 숫자를 화면에 표시한다.
     document.getElementById("repairCount").textContent =
         repair;
-}
 
+
+    // 반납 예정 자산 숫자를 화면에 표시한다.
+    dueSoonCount.textContent =
+        dueSoon;
+
+
+    // 반납 지연 자산 숫자를 화면에 표시한다.
+    overdueCount.textContent =
+        overdue;
+}
 
 // ========================================
 // 자산 삭제
