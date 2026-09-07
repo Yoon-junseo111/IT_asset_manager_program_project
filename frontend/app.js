@@ -667,17 +667,61 @@ function showAssetDetail(id) {
         return;
     }
 
-    // 자산 상세 정보를 보여준다.
-    alert(
-        "자산 상세 정보\n\n" +
-        "자산 ID : " + asset.id + "\n" +
-        "자산명 : " + asset.name + "\n" +
-        "유형 : " + asset.type + "\n" +
-        "상태 : " + asset.status + "\n" +
-        "사용자 : " + (asset.user || "-") + "\n" +
-        "대여일 : " + (asset.rentalDate || "-") + "\n" +
-        "반납 예정일 : " + (asset.returnDate || "-")
+    // 해당 자산의 대여 이력만 가져온다.
+    const history = rentalHistory.filter(
+        item => item.assetId === asset.id
     );
+
+    // 대여 이력 HTML 생성
+    let historyHTML = "";
+
+    if (history.length === 0) {
+
+        historyHTML = "<p>대여 이력이 없습니다.</p>";
+
+    } else {
+
+        historyHTML = history.map(item => `
+            <div class="history-item">
+                <p><strong>사용자:</strong> ${item.user}</p>
+                <p><strong>대여일:</strong> ${item.rentalDate}</p>
+                <p><strong>반납 예정일:</strong> ${item.dueDate}</p>
+                <p><strong>실제 반납일:</strong> ${item.actualReturnDate}</p>
+                <hr>
+            </div>
+        `).join("");
+    }
+
+    // 상세 정보 출력
+    const detailContent = document.getElementById("assetDetailContent");
+
+    detailContent.innerHTML = `
+        <p><strong>자산 ID:</strong> ${asset.id}</p>
+        <p><strong>자산명:</strong> ${asset.name}</p>
+        <p><strong>유형:</strong> ${asset.type}</p>
+        <p><strong>상태:</strong> ${asset.status}</p>
+        <p><strong>사용자:</strong> ${asset.user || "-"}</p>
+        <p><strong>대여일:</strong> ${asset.rentalDate || "-"}</p>
+        <p><strong>반납 예정일:</strong> ${asset.returnDate || "-"}</p>
+
+        <hr>
+
+        <h3>대여 이력</h3>
+
+        ${historyHTML}
+    `;
+
+    // 모달 표시
+    const modal = document.getElementById("assetDetailModal");
+
+    modal.style.display = "flex";
+}
+
+function closeAssetDetail() {
+
+    const modal = document.getElementById("assetDetailModal");
+
+    modal.style.display = "none";
 }
 
 // ========================================
