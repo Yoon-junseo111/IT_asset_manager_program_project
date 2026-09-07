@@ -1062,3 +1062,15 @@ updateDashboard();
 
 // 대여 이력 출력
 renderRentalHistory();
+
+// 모달 바깥쪽을 클릭하면 모달을 닫는다.
+window.addEventListener("click", function(event) {
+
+    const modal =
+        document.getElementById("assetDetailModal");
+
+    if (event.target === modal) {
+        closeAssetDetail();
+    }
+
+});
