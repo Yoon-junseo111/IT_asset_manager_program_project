@@ -275,7 +275,11 @@ function renderAssets(keyword = "", status = "전체") {
                 <button onclick="editAsset('${asset.id}')">
                     수정
                 </button>
-
+                
+                <!-- 자산 상세 버튼 -->
+                <button onclick="showAssetDetail('${asset.id}')">
+                    상세
+                </button>
 
                 ${
                     // 대여 가능한 자산만 대여 버튼을 표시한다.
@@ -303,7 +307,7 @@ function renderAssets(keyword = "", status = "전체") {
 
                     : ""
                 }
-
+                
 
                 <!-- 자산 삭제 버튼 -->
                 <button onclick="deleteAsset('${asset.id}')">
@@ -648,6 +652,32 @@ function updateDashboard() {
     // 반납 지연 자산 숫자를 화면에 표시한다.
     overdueCount.textContent =
         overdue;
+}
+
+
+// 자산 상세 정보
+function showAssetDetail(id) {
+
+    // 해당 ID의 자산을 찾는다.
+    const asset = assets.find(item => item.id === id);
+
+    // 자산이 없으면 종료한다.
+    if (!asset) {
+        alert("자산을 찾을 수 없습니다.");
+        return;
+    }
+
+    // 자산 상세 정보를 보여준다.
+    alert(
+        "자산 상세 정보\n\n" +
+        "자산 ID : " + asset.id + "\n" +
+        "자산명 : " + asset.name + "\n" +
+        "유형 : " + asset.type + "\n" +
+        "상태 : " + asset.status + "\n" +
+        "사용자 : " + (asset.user || "-") + "\n" +
+        "대여일 : " + (asset.rentalDate || "-") + "\n" +
+        "반납 예정일 : " + (asset.returnDate || "-")
+    );
 }
 
 // ========================================
