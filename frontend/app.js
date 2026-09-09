@@ -95,12 +95,28 @@ function saveRentalHistory() {
 
 function renderRentalHistory() {
 
+    const searchInput = document.getElementById("rentalHistorySearch");
+
+    const searchKeyword = searchInput
+        ? searchInput.value.toLowerCase().trim()
+        : "";
+
+    const filteredHistory = rentalHistory.filter(history => {
+
+        return (
+            history.assetId.toLowerCase().includes(searchKeyword) ||
+            history.assetName.toLowerCase().includes(searchKeyword) ||
+            history.user.toLowerCase().includes(searchKeyword)
+        );
+
+    });
+
     // 기존 대여 이력 화면을 초기화한다.
     rentalHistoryTableBody.innerHTML = "";
 
 
-    // 저장된 대여 이력을 하나씩 화면에 출력한다.
-    rentalHistory.forEach(history => {
+    // 저장된 대여 이력을 하나씩 화면에 출력한다. (필터링)
+    filteredHistory.forEach(history => {
 
         // 새로운 테이블 행을 만든다.
         const row =
@@ -1173,4 +1189,9 @@ document.getElementById("csvFileInput").addEventListener("change", function(even
 
     reader.readAsText(file, "UTF-8");
 
+});
+
+// 대여 이력 검색
+document.getElementById("rentalHistorySearch").addEventListener("input", function() {
+    renderRentalHistory();
 });
