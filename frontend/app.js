@@ -1114,3 +1114,63 @@ function exportAssetsToCSV() {
     // URL 정리
     URL.revokeObjectURL(url);
 }
+
+// CSV 파일 불러오기
+document.getElementById("csvFileInput").addEventListener("change", function(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        const lines = e.target.result
+            .replace(/^\uFEFF/, "")
+            .trim()
+            .split("\n");
+
+        // 첫 번째 줄은 헤더이므로 제외
+        const data = lines.slice(1);
+
+        assets = data.map(line => {
+
+            const [
+                id,
+                name,
+                type,
+                status,
+                user,
+                rentalDate,
+                returnDate
+            ] = line.split(",");
+
+            return {
+                id: id?.trim(),
+                name: name?.trim(),
+                type: type?.trim(),
+                status: status?.trim(),
+                user: user?.trim() || "",
+                rentalDate: rentalDate?.trim() || "",
+                returnDate: returnDate?.trim() || ""
+            };
+
+        });
+
+        // LocalStorage에 저장
+        localStorage.setItem("assets", JSON.stringify(assets));
+
+        // 화면 갱신
+        renderAssets();
+        updateDashboard();
+
+        alert("CSV 파일을 불러왔습니다.");
+
+    };
+
+    reader.readAsText(file, "UTF-8");
+
+});
