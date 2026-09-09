@@ -1074,3 +1074,43 @@ window.addEventListener("click", function(event) {
     }
 
 });
+
+// 자산 목록을 CSV 파일로 내보내기
+function exportAssetsToCSV() {
+
+    // CSV 헤더
+    let csv = "자산번호,자산명,종류,상태,사용자,대여일,반납 예정일\n";
+
+    // 자산 데이터를 CSV 형식으로 변환
+    assets.forEach(asset => {
+
+        csv += [
+            asset.id,
+            asset.name,
+            asset.type,
+            asset.status,
+            asset.user || "",
+            asset.rentalDate || "",
+            asset.returnDate || ""
+        ].join(",") + "\n";
+
+    });
+
+    // CSV 파일 생성
+    const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    // 다운로드 링크 생성
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "it_asset_list.csv";
+
+    // 다운로드 실행
+    link.click();
+
+    // URL 정리
+    URL.revokeObjectURL(url);
+}

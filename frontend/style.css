@@ -295,3 +295,22 @@ tbody tr:hover {
 .modal-content button:hover {
     background-color: #374151;
 }
+
+ /* CSV 내보내기 버튼 */
+.asset-list > button {
+    margin-bottom: 15px;
+    padding: 10px 18px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+/* 마우스를 올렸을 때 */
+.asset-list > button:hover {
+    background-color: #555;
+}
