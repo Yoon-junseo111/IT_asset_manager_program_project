@@ -455,6 +455,22 @@ document
                 // 자산 종류를 수정한다.
                 asset.type = assetType;
 
+                // 현재 대여 중인 자산은 반납 전까지 상태를 변경할 수 없도록 한다.
+                if (asset.status === "사용 중" && assetStatus !== "사용 중") {
+
+                    alert("대여 중인 자산은 반납 후 상태를 변경할 수 있습니다.");
+
+                    return;
+                }
+
+                // 대여 기능을 거치지 않고 사용 중 상태로 변경할 수 없도록 한다.
+                if (asset.status !== "사용 중" && assetStatus === "사용 중") {
+
+                    alert("자산 대여 기능을 통해서만 사용 중 상태로 변경할 수 있습니다.");
+
+                    return;
+                }
+
                 // 자산 상태를 수정한다.
                 asset.status = assetStatus;
 
