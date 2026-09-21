@@ -1049,31 +1049,33 @@ function returnAsset(id) {
 
 
     // ========================================
-    // 대여 이력 저장
+    // 기존 대여 이력 찾기
     // ========================================
 
-    // 현재 자산에 저장된 대여 정보를
-    // 반납하기 전에 대여 이력에 저장한다.
-    rentalHistory.push({
+    // 현재 자산의 대여 이력 중
+    // 아직 반납되지 않은 이력을 찾는다.
+    const rentalRecord =
+        rentalHistory.find(history =>
 
-        // 자산번호
-        assetId: asset.id,
+            history.assetId === asset.id &&
+            history.actualReturnDate === ""
 
-        // 자산명
-        assetName: asset.name,
+        );
 
-        // 대여한 사용자
-        user: asset.user,
 
-        // 실제 대여 날짜
-        rentalDate: asset.rentalDate,
+    // ========================================
+    // 실제 반납 날짜 기록
+    // ========================================
 
-        // 반납 예정일
-        dueDate: asset.returnDate,
+    // 기존 대여 이력이 있으면
+    // 새로운 이력을 추가하지 않고
+    // 실제 반납 날짜만 기록한다.
+    if (rentalRecord) {
 
-        // 실제 반납한 날짜
-        actualReturnDate: today
-    });
+        rentalRecord.actualReturnDate =
+            today;
+
+    }
 
 
     // ========================================
@@ -1104,7 +1106,7 @@ function returnAsset(id) {
     saveAssets();
 
 
-    // 새롭게 추가된 대여 이력을 LocalStorage에 저장한다.
+    // 반납 날짜가 업데이트된 대여 이력을 저장한다.
     saveRentalHistory();
 
 
@@ -1117,6 +1119,10 @@ function returnAsset(id) {
         searchInput.value,
         statusFilter.value
     );
+
+
+    // 대여 이력 화면을 다시 출력한다.
+    renderRentalHistory();
 
 
     // 대시보드를 업데이트한다.
