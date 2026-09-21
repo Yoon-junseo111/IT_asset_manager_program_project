@@ -757,6 +757,47 @@ function closeAssetDetail() {
 }
 
 // ========================================
+// 자산 수정 버튼
+// ========================================
+
+function editAsset(id) {
+
+    // 수정할 자산을 찾는다.
+    const asset = assets.find(
+        item => item.id === id
+    );
+
+    // 자산을 찾지 못하면 종료한다.
+    if (!asset) {
+        alert("자산을 찾을 수 없습니다.");
+        return;
+    }
+
+    // 현재 자산 정보를 입력창에 표시한다.
+    document.getElementById("assetId").value =
+        asset.id;
+
+    document.getElementById("assetName").value =
+        asset.name;
+
+    document.getElementById("assetType").value =
+        asset.type;
+
+    document.getElementById("assetStatus").value =
+        asset.status;
+
+    document.getElementById("assetUser").value =
+        asset.user || "";
+
+    // 현재 수정 중인 자산의 ID를 저장한다.
+    editingAssetId = asset.id;
+
+    // 등록 버튼을 수정 버튼으로 변경한다.
+    document.getElementById("addAssetButton").textContent =
+        "수정";
+}
+
+// ========================================
 // 자산 삭제
 // ========================================
 
@@ -767,25 +808,19 @@ function deleteAsset(id) {
         history => history.assetId === id
     );
 
-    // 대여 이력이 있는 경우 사용자에게 확인한다.
+    // 대여 이력이 있는 경우 사용자에게 안내한다.
     if (hasRentalHistory) {
 
         const historyConfirmed = confirm(
-            "이 자산에는 대여 이력이 있습니다.\n대여 이력도 함께 삭제하시겠습니까?"
+            "이 자산에는 대여 이력이 있습니다.\n" +
+            "자산은 삭제되지만 대여 이력은 보존됩니다.\n\n" +
+            "계속 삭제하시겠습니까?"
         );
 
         // 사용자가 취소하면 삭제하지 않는다.
         if (!historyConfirmed) {
             return;
         }
-
-        // 해당 자산의 대여 이력만 삭제한다.
-        rentalHistory = rentalHistory.filter(
-            history => history.assetId !== id
-        );
-
-        // 변경된 대여 이력을 저장한다.
-        saveRentalHistory();
     }
 
     // 자산 삭제 여부를 사용자에게 확인한다.
@@ -808,10 +843,11 @@ function deleteAsset(id) {
     // 자산이 존재하는 경우 삭제한다.
     if (index !== -1) {
 
-        // 배열에서 자산을 삭제한다.
+        // 배열에서 자산만 삭제한다.
+        // 대여 이력은 삭제하지 않는다.
         assets.splice(index, 1);
 
-        // 변경된 데이터를 저장한다.
+        // 변경된 자산 데이터를 저장한다.
         saveAssets();
 
         // 자산 목록을 다시 출력한다.
@@ -823,66 +859,11 @@ function deleteAsset(id) {
         // 대시보드를 업데이트한다.
         updateDashboard();
 
-        // 대여 이력 화면도 다시 출력한다.
+        // 삭제된 자산의 대여 이력도
+        // 그대로 화면에 유지한다.
         renderRentalHistory();
     }
 }
-
-
-// ========================================
-// 자산 수정
-// ========================================
-
-function editAsset(id) {
-
-    // 수정할 자산을 찾는다.
-    const asset =
-        assets.find(
-            item => item.id === id
-        );
-
-
-    // 자산이 없으면 종료한다.
-    if (!asset) {
-        return;
-    }
-
-
-    // 현재 자산 ID를 수정 상태에 저장한다.
-    editingAssetId = id;
-
-
-    // 자산번호 입력창에 기존 자산번호를 넣는다.
-    document.getElementById("assetId").value =
-        asset.id;
-
-
-    // 자산명 입력창에 기존 자산명을 넣는다.
-    document.getElementById("assetName").value =
-        asset.name;
-
-
-    // 자산 종류 선택창에 기존 종류를 넣는다.
-    document.getElementById("assetType").value =
-        asset.type;
-
-
-    // 상태 선택창에 기존 상태를 넣는다.
-    document.getElementById("assetStatus").value =
-        asset.status;
-
-
-    // 사용자 입력창에 기존 사용자를 넣는다.
-    document.getElementById("assetUser").value =
-        asset.user || "";
-
-
-    // 버튼 문구를 "수정 저장"으로 변경한다.
-    document
-        .getElementById("addAssetButton")
-        .textContent = "수정 저장";
-}
-
 
 // ========================================
 // 자산 대여
@@ -899,6 +880,17 @@ function rentAsset(id) {
 
     // 자산이 없으면 종료한다.
     if (!asset) {
+        return;
+    }
+
+
+    // 수리 중인 자산은 대여할 수 없도록 한다.
+    if (asset.status === "수리 중") {
+
+        alert(
+            "수리 중인 자산은 대여할 수 없습니다."
+        );
+
         return;
     }
 
@@ -937,7 +929,7 @@ function rentAsset(id) {
 
 
     // ========================================
-    // 대여 정보 저장
+    // 자산 대여 정보 저장
     // ========================================
 
     // 자산 상태를 사용 중으로 변경한다.
@@ -956,8 +948,39 @@ function rentAsset(id) {
     asset.returnDate = returnDate;
 
 
+    // ========================================
+    // 대여 이력 추가
+    // ========================================
+
+    // 현재 대여 정보를 대여 이력에 추가한다.
+    rentalHistory.push({
+
+        // 자산번호
+        assetId: asset.id,
+
+        // 자산명
+        assetName: asset.name,
+
+        // 대여한 사용자
+        user: user,
+
+        // 대여 날짜
+        rentalDate: today,
+
+        // 반납 예정일
+        dueDate: returnDate,
+
+        // 아직 반납하지 않았으므로 비워둔다.
+        actualReturnDate: ""
+    });
+
+
     // 변경된 자산 데이터를 저장한다.
     saveAssets();
+
+
+    // 변경된 대여 이력을 저장한다.
+    saveRentalHistory();
 
 
     // 자산 목록을 다시 출력한다.
@@ -965,6 +988,10 @@ function rentAsset(id) {
         searchInput.value,
         statusFilter.value
     );
+
+
+    // 대여 이력도 즉시 다시 출력한다.
+    renderRentalHistory();
 
 
     // 대시보드를 업데이트한다.
