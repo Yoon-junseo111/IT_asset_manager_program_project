@@ -762,18 +762,42 @@ function closeAssetDetail() {
 
 function deleteAsset(id) {
 
-    // 삭제 여부를 사용자에게 확인한다.
+    // 삭제하려는 자산의 대여 이력을 확인한다.
+    const hasRentalHistory = rentalHistory.some(
+        history => history.assetId === id
+    );
+
+    // 대여 이력이 있는 경우 사용자에게 확인한다.
+    if (hasRentalHistory) {
+
+        const historyConfirmed = confirm(
+            "이 자산에는 대여 이력이 있습니다.\n대여 이력도 함께 삭제하시겠습니까?"
+        );
+
+        // 사용자가 취소하면 삭제하지 않는다.
+        if (!historyConfirmed) {
+            return;
+        }
+
+        // 해당 자산의 대여 이력만 삭제한다.
+        rentalHistory = rentalHistory.filter(
+            history => history.assetId !== id
+        );
+
+        // 변경된 대여 이력을 저장한다.
+        saveRentalHistory();
+    }
+
+    // 자산 삭제 여부를 사용자에게 확인한다.
     const confirmed =
         confirm(
             "정말 이 자산을 삭제하시겠습니까?"
         );
 
-
     // 사용자가 취소하면 삭제하지 않는다.
     if (!confirmed) {
         return;
     }
-
 
     // 삭제할 자산의 위치를 찾는다.
     const index =
@@ -781,17 +805,14 @@ function deleteAsset(id) {
             asset => asset.id === id
         );
 
-
     // 자산이 존재하는 경우 삭제한다.
     if (index !== -1) {
 
         // 배열에서 자산을 삭제한다.
         assets.splice(index, 1);
 
-
         // 변경된 데이터를 저장한다.
         saveAssets();
-
 
         // 자산 목록을 다시 출력한다.
         renderAssets(
@@ -799,9 +820,11 @@ function deleteAsset(id) {
             statusFilter.value
         );
 
-
         // 대시보드를 업데이트한다.
         updateDashboard();
+
+        // 대여 이력 화면도 다시 출력한다.
+        renderRentalHistory();
     }
 }
 
